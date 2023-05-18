@@ -1,3 +1,15 @@
+/**
+ *  File: BinarySearchTree.java
+ *  Professor: Professor Kapleau
+ *  Course: CS114
+ *  Section: H02
+ *  
+ *  The code below contains is my implementation of a binary search tree. Further comments are below.
+ * 
+ *  kFLFBx9T7XJmrr3p2F/fmAj+8DS8GqnKeq/TOIAPcuI=
+ */
+
+//import required packages
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -5,6 +17,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
 
     private Node<E> root;
     private Vector<E> vector;
+    private Node<E> iop;
 
     //method implementation was provided beforehand
     public Iterator<E> iterator() {
@@ -22,6 +35,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
         }
     }
 
+    //method to insert at the root since tree is empty
     public void insert(E data){
         if(root == null)
             root = new Node<E>(data);
@@ -30,31 +44,34 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
             insert(data, root);
     }
 
+    //method to insert at leaf since tree is not empty 
     private void insert(E data, Node<E> curr){
+        //move through left subtree(s) and insert
         if(data.compareTo(curr.data) <= 0){
             if(curr.left == null){
                 curr.left = new Node<E>(data);
                 return;
             }
 
-            else{
+            else
                 insert(data, curr.left);
-            }
+            
         }
-
+        //move through right subtree(s) and insert
         else{
             if(curr.right == null){
                 curr.right = new Node<E>(data);
                 return;
             }
 
-            else{
+            else
                 insert(data, curr.right);
-            }
+
         }
         
     }
 
+    //method to remove root node if data is located there
     public void remove(E data) {
         if(root != null){
             //determine if data is at the root
@@ -64,16 +81,16 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                     root = root.left != null ? root.left : root.right;
                 }
 
-                //China two-child policy
+                //two children case
                 else{
-                    Node<E> iop = findIOP(root.left);
+                    iop = findIOP(root.left);
                     E temp = iop.data;
                     iop.data = root.data;
                     root.data = temp;
 
                     if(root.left != iop){
                         Node<E> curr = root.left;
-                        goBefore(curr, iop).right = iop.left;
+                        beforeIOP(curr).right = iop.left;
                     }
 
                     else{
@@ -82,12 +99,12 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                 }
             }
         
-            else{
-                remove(data, root);
-            }
+            else
+                remove(data, root);            
         }
     }
 
+    //method to remove from the node from either of the subtrees
     private void remove(E data, Node<E> curr){
         if(curr != null){
             //remove from left subtree
@@ -98,9 +115,9 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                     if(curr.left.left == null || curr.left.right == null)
                         curr.left = curr.left.left != null ? curr.left.left : curr.left.right;
                     
-                    //China two child policy
+                    //two children case
                     else{
-                        Node<E> iop = findIOP(curr.left.left);
+                        iop = findIOP(curr.left.left);
                         E temp = iop.data;
                         iop.data = curr.left.data;
                         curr.left.data = temp;
@@ -108,19 +125,17 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                         if(curr.left.left != iop){
                             //travel to the parent of IOP then assign reference to IOP.right
                             curr = curr.left.left;
-                            goBefore(curr, iop).right = iop.left;                        
+                            beforeIOP(curr).right = iop.left;                        
                         }
 
-                        else{
+                        else
                             curr.left.left = curr.left.left.left;
-                        }
                     }
                 }
 
                 //remove from elsewhere within left subtree
-                else{
+                else
                     remove(data, curr.left);
-                }
             }
 
             //remove from right subtree
@@ -131,10 +146,9 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                     if(curr.right.left == null || curr.right.right == null)
                         curr.right = curr.right.left != null ? curr.right.left : curr.right.right;
                     
-                    //China two child policy
+                    //two children case
                     else{
-                        Node<E> iop = findIOP(curr.right.left);
-                    
+                        iop = findIOP(curr.right.left);
                         E temp = iop.data;
                         iop.data = curr.right.data;
                         curr.right.data = temp;
@@ -142,30 +156,41 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                         if(curr.right.left != iop){
                             //travel to the parent of IOP then assign reference to IOP.right
                             curr = curr.right.left;
-                            goBefore(curr, iop).right = iop.left;
+                            beforeIOP(curr).right = iop.left;
                         }
     
-                        else{
+                        else
                             curr.right.left = curr.right.left.left;
-                        }
                     }
                 }
 
                 //remove from elsewhere within right subtree
-                else{
+                else
                     remove(data, curr.right);
-                }
             }
         }
     }
 
-    private Node<E> goBefore(Node<E> curr, Node<E> iop) {
-        return (curr.right != iop)? goBefore(curr.right, iop) : curr;
+    //helper method to locate the node prior to the IOP
+    private Node<E> beforeIOP(Node<E> curr){
+        return (curr.right != iop)? beforeIOP(curr.right) : curr;
     }
 
+    //helper method to locate the node considered IOP to the parameter node
     private Node<E> findIOP(Node<E> curr){
         return (curr.right != null)? findIOP(curr.right) : curr;
     }
+
+    /*method to call another method in order to search values in tree
+    public boolean search(E data){
+        return search(data, root);
+    }
+
+    //method to check if node with required values exists in the tree
+    private boolean search(E data, Node<E> curr){
+        int cmp;
+        return (curr != null) ? (((cmp = data.compareTo(curr.data)) != 0) ? (cmp < 0 ? search(data, curr.left) : search(data,curr.right)) : true) : false;
+    }*/
 
     public boolean search(E data){
         return search(data, root);
@@ -173,6 +198,6 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
 
     private boolean search(E data, Node<E> curr){
         int cmp;
-        return (curr != null) ? (((cmp = data.compareTo(curr.data)) != 0) ? (cmp < 0 ? search(data, curr.left) : search(data,curr.right)) : true) : false;
+        return (curr != null) ? (((cmp = data.compareTo(curr.data)) != 0) ? ((cmp < 0) ? search(data, curr.left) : search(data, curr.right)) : true) : false;
     }
 }
