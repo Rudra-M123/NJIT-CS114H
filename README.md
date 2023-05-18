@@ -1,2 +1,2 @@
 # NJIT-CS114H
-CS-114H with Professor Kapleau, 2023S
+Data Structures and Algorithms in Java with Professor Kapleau (CS-114H, 2023S)
