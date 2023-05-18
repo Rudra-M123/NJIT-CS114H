@@ -13,7 +13,6 @@
 import java.util.Arrays;
 
 public class Sorts{
-
     //heapSort() - a sorting algorithm that creates, breaks, and mends max-heaps until the array is sorted
     public static <T extends Comparable<? super T>> void heapSort(T[] array){
         maxHeapify(array, array.length);
