@@ -1,7 +1,6 @@
 /**
  *  File: SortedList.java
  *  Professor: Professor Kapleau
- *  Name: Rudra Mehta (rm279@njit.edu)
  *  Course: CS114
  *  Section: H02
  *  
