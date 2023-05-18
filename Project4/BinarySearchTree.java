@@ -181,17 +181,6 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
         return (curr.right != null)? findIOP(curr.right) : curr;
     }
 
-    /*method to call another method in order to search values in tree
-    public boolean search(E data){
-        return search(data, root);
-    }
-
-    //method to check if node with required values exists in the tree
-    private boolean search(E data, Node<E> curr){
-        int cmp;
-        return (curr != null) ? (((cmp = data.compareTo(curr.data)) != 0) ? (cmp < 0 ? search(data, curr.left) : search(data,curr.right)) : true) : false;
-    }*/
-
     public boolean search(E data){
         return search(data, root);
     }
